@@ -1,7 +1,7 @@
 import { AskRequest, AskResponse, Source } from '../types.js';
 import { getEmbedding } from '../lib/embeddings.js';
 import { querySimilarChunks } from '../lib/pinecone.js';
-import { buildPrompt } from '../lib/promptBuilder.js';
+import { buildPrompt, buildMessages } from '../lib/promptBuilder.js';
 import { generateAnswer } from '../lib/llm.js';
 
 const CORS_HEADERS = {
@@ -26,12 +26,14 @@ export async function processAsk(data: AskRequest): Promise<AskResponse> {
 
   // 2. Query topK chunks from Pinecone
   const retrievedChunks = await querySimilarChunks(questionVector, topK);
+  console.log('[DEBUG] Retrieved chunks from Pinecone:', JSON.stringify(retrievedChunks, null, 2));
 
-  // 3. Build RAG prompt
-  const prompt = buildPrompt(data.question, retrievedChunks);
+  // 3. Build RAG prompt messages
+  const messages = buildMessages(data.question, retrievedChunks);
+  console.log('[DEBUG] Constructed chat messages:', JSON.stringify(messages, null, 2));
 
   // 4. Call OpenAI LLM
-  const answer = await generateAnswer(prompt);
+  const answer = await generateAnswer(messages);
 
   // 5. Extract unique sources by docId
   const sourceMap = new Map<string, Source>();

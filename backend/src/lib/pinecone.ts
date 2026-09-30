@@ -17,15 +17,15 @@ function getPineconeIndex() {
 }
 
 /**
- * Deletes all existing chunks for a given docId by listing IDs with prefix `${docId}#chunk-`
+ * Deletes any stale chunks for a docId that will not be overwritten by the current ingestion.
  */
-export async function deleteDocChunks(docId: string): Promise<void> {
+export async function deleteDocChunks(docId: string, currentChunkCount: number = 0): Promise<void> {
   const index = getPineconeIndex();
   const prefix = `${docId}#chunk-`;
 
   try {
     let paginationToken: string | undefined = undefined;
-    const idsToDelete: string[] = [];
+    const existingIds: string[] = [];
 
     do {
       const listResponse = await index.listPaginated({
@@ -36,7 +36,7 @@ export async function deleteDocChunks(docId: string): Promise<void> {
       if (listResponse.vectors && listResponse.vectors.length > 0) {
         for (const v of listResponse.vectors) {
           if (v.id) {
-            idsToDelete.push(v.id);
+            existingIds.push(v.id);
           }
         }
       }
@@ -44,11 +44,19 @@ export async function deleteDocChunks(docId: string): Promise<void> {
       paginationToken = listResponse.pagination?.next;
     } while (paginationToken);
 
-    if (idsToDelete.length > 0) {
-      await index.deleteMany(idsToDelete);
+    // New vector IDs created/overwritten during this ingestion
+    const newIds = new Set(
+      Array.from({ length: currentChunkCount }, (_, i) => `${docId}#chunk-${i}`)
+    );
+
+    // Only delete stale IDs that are NOT in the current chunk set
+    const staleIds = existingIds.filter((id) => !newIds.has(id));
+
+    if (staleIds.length > 0) {
+      await index.deleteMany(staleIds);
     }
   } catch (error) {
-    console.warn(`Warning deleting chunks for docId ${docId}:`, error);
+    console.warn(`Warning cleaning up stale chunks for docId ${docId}:`, error);
   }
 }
 

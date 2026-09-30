@@ -26,14 +26,14 @@ export async function processIngest(data: IngestRequest): Promise<IngestResponse
       throw new Error(`Invalid document format: each doc must have id, title, and content`);
     }
 
-    // 1. Delete old chunks for this docId first (prevents duplicates on re-ingestion)
-    await deleteDocChunks(doc.id);
-
-    // 2. Chunk document content
+    // 1. Chunk document content
     const textChunks = chunkText(doc.content);
     if (textChunks.length === 0) {
       continue;
     }
+
+    // 2. Cleanup stale chunks for this docId (preserves overwritten chunk IDs)
+    await deleteDocChunks(doc.id, textChunks.length);
 
     // 3. Generate embeddings
     const embeddings = await getEmbeddings(textChunks);
