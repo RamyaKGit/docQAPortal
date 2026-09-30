@@ -1,13 +1,13 @@
-# Doctor QA Portal (Document RAG App)
+# Doctor QA Portal
 
-A Document Q&A (RAG) Portal where users add documents, ask questions, and receive context-accurate answers with source document citations.
+A Doctor Q&A portal where you can upload documents and ask questions.
 
 ---
 
 ## 🛠️ 1. Tools Used
 
-- **Frontend**: Next.js 15 (App Router, static export `output: 'export'`), React 19, TypeScript, Vanilla CSS.
-- **Backend**: Node.js 22, TypeScript, minimal HTTP server (`tsx` for local dev), AWS Lambda.
+- **Frontend**: Next.js (App Router, static export `output: 'export'`), React, TypeScript, Vanilla CSS.
+- **Backend**: Node.js, TypeScript, minimal HTTP server (`tsx` for local dev), AWS Lambda.
 - **Vector Database**: Pinecone (official `@pinecone-database/pinecone` SDK).
 - **Embeddings & LLM**: OpenAI SDK (`text-embedding-3-small` for vector embeddings, `gpt-4o-mini` for chat completions).
 - **Infrastructure as Code**: AWS CDK (TypeScript) deploying 2 Lambdas & REST API Gateway.
@@ -45,7 +45,7 @@ User Question ──► Generate Embedding ──► Query Top-K Vector Matches 
 ## 💻 3. Local Setup & How to Run Locally
 
 ### Prerequisites
-- Node.js 22+
+- Node.js
 - OpenAI API Key & Pinecone API Key
 
 ### Environment Variables
@@ -159,7 +159,7 @@ Update `frontend/.env.local` with your deployed `ApiUrl` (e.g. `NEXT_PUBLIC_API_
 
 ## 🔮 7. If I Had More Time, I Would...
 
-- Implement semantic / sentence-aware text chunking.
-- Add hybrid search (BM25 keyword search + vector embeddings).
-- Stream LLM responses token-by-token to the frontend UI using Server-Sent Events (SSE).
-- Add user authentication and namespace isolation per tenant in Pinecone.
+- Add a better, more feature-rich UI.
+- Add a CI/CD pipeline to automate building, testing, and deploying the code.
+- Add more test cases (integration and end-to-end testing).
+- Add RAG evaluation using Ragas / TruLens to measure Faithfulness, Context Precision, and Answer Relevance across a test benchmark dataset.
