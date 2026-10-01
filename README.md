@@ -45,8 +45,10 @@ User Question ──► Generate Embedding ──► Query Top-K Vector Matches 
 ## 💻 3. Local Setup & How to Run Locally
 
 ### Prerequisites
-- Node.js
-- OpenAI API Key & Pinecone API Key
+- Node.js 20 or higher
+- An OpenAI API key and a Pinecone API key
+- A Pinecone index created in the Pinecone console: serverless, dense, dimension `1536`, metric `cosine` (matches `text-embedding-3-small`). The code connects to it by name and does not create it.
+- For deployment only: an AWS account with credentials configured (`aws configure`)
 
 ### Environment Variables
 
@@ -141,11 +143,14 @@ To deploy backend infrastructure to AWS (2 Lambdas + API Gateway):
 cd infra
 npm install
 npm run cdk bootstrap   # Required once per AWS account/region
+set -a; source ../backend/.env; set +a   # load keys so CDK can pass them to the Lambdas
 npm run cdk deploy
 ```
 
 Update `frontend/.env.local` with your deployed `ApiUrl` (e.g. `NEXT_PUBLIC_API_URL=https://<api-id>.execute-api.us-west-2.amazonaws.com/prod/`) to connect the frontend to the cloud backend.
+Requires `backend/.env` to be filled in. CDK passes those values to the Lambdas as environment variables at deploy time. After deploying, the `ApiUrl` output is the base URL for `/ingest` and `/ask`.
 
+The backend stack was deployed to AWS (us-west-2) and tested with the same requests as above. The frontend runs locally and is not hosted.
 ---
 
 ## ⚖️ 6. Assumptions, Trade-Offs & Chunking Strategy
@@ -154,7 +159,8 @@ Update `frontend/.env.local` with your deployed `ApiUrl` (e.g. `NEXT_PUBLIC_API_
 - **Deduplication**: Re-ingesting a document updates vector contents and removes stale extra chunks matching prefix `<docId>#chunk-`.
 - **Existing Pinecone Index**: Connects to an existing index by name (`PINECONE_INDEX`).
 - **Static Export**: Next.js frontend uses `output: 'export'` for static hosting. Client-side routing handles `/` -> `/ask`.
-
+- **Secrets**: API keys are passed to the Lambdas as plain environment variables for simplicity.
+- **CORS**: the API allows all origins (`*`), which is fine for a demo but should be restricted in production.
 ---
 
 ## 🔮 7. If I Had More Time, I Would...
@@ -163,3 +169,6 @@ Update `frontend/.env.local` with your deployed `ApiUrl` (e.g. `NEXT_PUBLIC_API_
 - Add a CI/CD pipeline to automate building, testing, and deploying the code.
 - Add more test cases (integration and end-to-end testing).
 - Add RAG evaluation using Ragas / TruLens to measure Faithfulness, Context Precision, and Answer Relevance across a test benchmark dataset.
+- Store API keys in AWS Secrets Manager instead of Lambda environment variables.
+- Add API authentication and rate limiting, and restrict CORS to the frontend's origin.
+- Host the frontend on S3 and CloudFront.
