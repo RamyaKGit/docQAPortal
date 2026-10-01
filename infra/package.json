@@ -1,5 +1,5 @@
 {
-  "name": "doctor-qa-infra",
+  "name": "doc-qa-infra",
   "version": "1.0.0",
   "private": true,
   "bin": {

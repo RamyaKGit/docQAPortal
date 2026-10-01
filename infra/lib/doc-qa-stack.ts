@@ -59,7 +59,7 @@ export class DocQaStack extends cdk.Stack {
 
     // API Gateway REST API with CORS
     const api = new apigateway.RestApi(this, 'DocQaApi', {
-      restApiName: 'Doctor QA Portal API',
+      restApiName: 'Document QA Portal API',
       description: 'API Gateway for Document QA Portal',
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,

@@ -2,7 +2,7 @@ import './globals.css';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Doctor QA Portal - Document Q&A (RAG)',
+  title: 'Document QA Portal - Document Q&A (RAG)',
   description: 'Add documents and ask questions powered by OpenAI and Pinecone vector store.',
 };
 
@@ -17,7 +17,7 @@ export default function RootLayout({
         <header className="header">
           <nav className="nav">
             <div className="logo">
-              🩺 Doctor QA Portal
+              📄 Document QA Portal
             </div>
             <div className="nav-links">
               <Link href="/docs" className="nav-link" id="nav-docs">

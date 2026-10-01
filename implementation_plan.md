@@ -10,7 +10,7 @@
 
 ## Folder Tree
 ```
-doctorQAPortal/
+doc-qa-portal/
 ├── prompts/project_prompt.md
 ├── implementation_plan.md
 ├── .gitignore

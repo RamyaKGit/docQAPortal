@@ -16,7 +16,7 @@ Build a Document Q&A (RAG) portal app. Users add documents, then ask questions a
 4. REGENERABLE: this prompt is saved as `prompts/project_prompt.md`. Do not create other prompt files.
 
 # FOLDER STRUCTURE
-Workspace root is the current folder (doctorQAPortal). Create everything directly inside it, with no extra parent folder.
+Workspace root is the current folder (doc-qa-portal). Create everything directly inside it, with no extra parent folder.
 ```
 ├── prompts/project_prompt.md
 ├── implementation_plan.md
