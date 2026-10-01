@@ -148,9 +148,11 @@ npm run cdk deploy
 ```
 
 Update `frontend/.env.local` with your deployed `ApiUrl` (e.g. `NEXT_PUBLIC_API_URL=https://<api-id>.execute-api.us-west-2.amazonaws.com/prod/`) to connect the frontend to the cloud backend.
+
 Requires `backend/.env` to be filled in. CDK passes those values to the Lambdas as environment variables at deploy time. After deploying, the `ApiUrl` output is the base URL for `/ingest` and `/ask`.
 
 The backend stack was deployed to AWS (us-west-2) and tested with the same requests as above. The frontend runs locally and is not hosted.
+
 ---
 
 ## ⚖️ 6. Assumptions, Trade-Offs & Chunking Strategy
