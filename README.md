@@ -1,6 +1,6 @@
-# Doctor QA Portal
+# Document QA Portal
 
-A Doctor Q&A portal where you can upload documents and ask questions.
+A Document Q&A portal where you can upload documents and ask questions.
 
 ---
 
